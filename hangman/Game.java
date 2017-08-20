@@ -10,6 +10,10 @@ class Game {
 		misses = "";
 	}
 	
+	public String getAnswer() {
+		return this.answer;
+	}
+	
 	private char validateGuess(char letter) {
 		if (! Character.isLetter(letter)) {
 			throw new IllegalArgumentException("A letter is required!");
@@ -32,6 +36,13 @@ class Game {
 		return isHit;
 	}
 	
+	public boolean applyGuess(String letters) {
+		if (letters.length() == 0) {
+			throw new IllegalArgumentException("Empty guess!");
+		}
+		return applyGuess(letters.charAt(0));
+	}
+	
 	public int remainingGuesses() {
 		return MAX_MISSES - misses.length();
 	}
@@ -46,5 +57,9 @@ class Game {
 			progress += display;
 		}
 		return progress;
+	}
+	
+	public boolean isWon() {
+		return getCurrentProgress().indexOf("_") == -1;
 	}
 }
