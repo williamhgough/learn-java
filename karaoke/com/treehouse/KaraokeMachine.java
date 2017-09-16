@@ -16,6 +16,7 @@ public class KaraokeMachine {
 		mReader = new BufferedReader(new InputStreamReader(System.in));
 		mMenu = new HashMap<String, String>();
 		mMenu.put("Add", "Add a new song to the library.");
+		mMenu.put("Choose", "Choose a song!");
 		mMenu.put("Quit", "Give up. Exit the program.");
 	}
 	
@@ -41,6 +42,36 @@ public class KaraokeMachine {
 		return new Song(artist, title, url);
 	}
 	
+	private String promptArtist() throws IOException {
+		System.out.println("Available artists:");
+		List<String> artists = new ArrayList<>(mLibrary.getArtists());
+		int index = promptForIndex(artists);
+		return artists.get(index);
+	}
+	
+	private Song promptSongForArtist(String artist) throws IOException {
+		List<Song> songs = mLibrary.getSongsForArtist(artist);
+		List<String> songTitles = new ArrayList<>();
+		
+		for (Song song : songs) {
+			songTitles.add(song.getTitle());
+		}
+		int index = promptForIndex(songTitles);
+		return songs.get(index);
+	}
+	
+	private int promptForIndex(List<String> options) throws IOException {
+		int counter = 1;
+		for(String option : options) {
+			System.out.printf("%d.)  %s %n", counter, option);
+			counter++;
+		}
+		String optionAsString = mReader.readLine();
+		int choice = Integer.parseInt(optionAsString.trim());
+		System.out.print("Your choice:   ");
+		return choice - 1;
+	}
+	
 	public void run() {
 		String choice = "";
 		do {
@@ -51,6 +82,11 @@ public class KaraokeMachine {
 						Song song = promptNewSong();
 						mLibrary.addSong(song);
 						System.out.printf("%s added! %n%n", song);
+						break;
+					case "choose":
+						String artist = promptArtist();
+						Song artistSong = promptSongForArtist(artistSong);
+						System.out.printf("You chose:  %s %n", artistSong);
 						break;
 					case "quit":
 						System.out.println("Thanks for playing!");
